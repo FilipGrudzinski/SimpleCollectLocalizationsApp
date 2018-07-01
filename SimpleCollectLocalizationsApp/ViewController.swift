@@ -15,16 +15,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     
     @IBOutlet weak var latitudeLabel: UILabel!
-    
     @IBOutlet weak var longitudeLabel: UILabel!
-    
     @IBOutlet weak var courseLabel: UILabel!
-    
     @IBOutlet weak var speedLabel: UILabel!
-    
     @IBOutlet weak var altitudeLabel: UILabel!
-    
-    
     @IBOutlet weak var addressLabel: UILabel!
     
     var locationManager = CLLocationManager()
@@ -55,6 +49,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         //let speed = userLocation.speed
         //let atltitude = userLocation.altitude
         
+        self.longitudeLabel.text = String(userLocation.coordinate.longitude)
+        self.latitudeLabel.text = String(userLocation.coordinate.latitude)
+        self.speedLabel.text = String(userLocation.speed)
+        self.courseLabel.text = String(userLocation.course)
+        self.altitudeLabel.text = String(userLocation.altitude)
         
         CLGeocoder().reverseGeocodeLocation(userLocation) {(placemarks, error) in
             
@@ -66,6 +65,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 
                 if let placemark = placemarks?[0] {
                     
+                    //Long way
+                    /*
                     var country = ""
                     var postalCode = ""
                     var subAdministrativeArea = ""
@@ -89,20 +90,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     if placemark.administrativeArea != nil { administrativeArea = placemark.administrativeArea! }
                     
                     self.addressLabel.text = (subThoroughFare + " " + thoroughFare + "\n" + subLocality + "\n" + subAdministrativeArea + "\n"
-                        +  administrativeArea + " " + postalCode + "\n" + country )
+                        +  administrativeArea + " " + postalCode + "\n" + country ) */
                     
-                    self.longitudeLabel.text = String(userLocation.coordinate.longitude)
-                    self.latitudeLabel.text = String(userLocation.coordinate.latitude)
-                    self.speedLabel.text = String(userLocation.speed)
-                    self.courseLabel.text = String(userLocation.course)
-                    self.altitudeLabel.text = String(userLocation.altitude)
+                    // Short way
                     
+                    var place = ""
+                    
+                    if placemark.subThoroughfare != nil { place += placemark.subThoroughfare! + " " }
+                    if placemark.thoroughfare != nil { place += placemark.thoroughfare! + "\n" }
+                    if placemark.subLocality != nil { place += placemark.subLocality! + "\n" }
+                    if placemark.subAdministrativeArea != nil { place += placemark.subAdministrativeArea! + "\n" }
+                    if placemark.administrativeArea != nil { place += placemark.administrativeArea! + " " }
+                    if placemark.postalCode != nil { place += placemark.postalCode! + "\n" }
+                    if placemark.country != nil { place += placemark.country! }
+                    
+                    self.addressLabel.text = String(place)
+   
                 }
-                
-                
+      
             }
-            
-            
+           
         }
         
     }
